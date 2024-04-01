@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_resize_image_demo/js_function.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,6 +63,16 @@ class MyHomePage extends HookWidget {
                   final imageData = bytes.takeBytes();
                   imageDataOriginal.value = imageData;
                   print('Image: ${imageData.length}');
+                  try {
+                    final dataFromJs =
+                        await resizeImageFunction(imageData, 1920, 1080);
+                    final resizedImageData =
+                        Uint8List.view(dataFromJs as ByteBuffer);
+                    imageDataResized.value = resizedImageData;
+                    print(resizedImageData.length);
+                  } catch (e) {
+                    print('Error resizing image: $e');
+                  }
                 },
                 child: const Text('Select image'),
               ),
